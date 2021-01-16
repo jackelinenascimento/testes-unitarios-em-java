@@ -1,7 +1,12 @@
 package br.ce.wcaquino.servicos;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,6 +30,12 @@ public class LocacaoServiceTest {
 		//verificação
 		Assert.assertTrue(DataUtils.isMesmaData(aluguel.getDataLocacao(), new Date()));
 		Assert.assertTrue(DataUtils.isMesmaData(aluguel.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
-		Assert.assertTrue(aluguel.getValor() == 10.25);
+		Assert.assertEquals(10.25, aluguel.getValor(), 0.01); //valor esperado, valor real, margem erro
+	
+		//verificação com AssertThat
+		assertThat(aluguel.getValor(), is(10.25)); //com import estatico
+		assertThat(aluguel.getValor(), is(CoreMatchers.not(5.0)));
+		assertThat(DataUtils.isMesmaData(aluguel.getDataLocacao(), new Date()), is(true));
+		assertThat(DataUtils.isMesmaData(aluguel.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)), is(true));		
 	}
 }
