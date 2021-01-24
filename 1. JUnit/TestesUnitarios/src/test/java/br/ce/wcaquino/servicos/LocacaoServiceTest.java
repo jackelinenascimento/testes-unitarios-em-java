@@ -3,7 +3,9 @@ package br.ce.wcaquino.servicos;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -38,17 +40,16 @@ public class LocacaoServiceTest {
 	
 	@After
 	public void tearDown() {
-		
 	}
 	
 	@Test
 	public void testeLocacao() throws Exception {
 		// cenário
 		Usuario usuarioTeste = new Usuario("João");
-		Filme filmeAlugado = new Filme("Orgulho e Preconceito", 5, 10.25);
+		List<Filme> filmes = Arrays.asList(new Filme("Orgulho e Preconceito", 5, 10.25));
 
 		// ação
-		Locacao aluguel = service.alugarFilme(usuarioTeste, filmeAlugado);
+		Locacao aluguel = service.alugarFilme(usuarioTeste, filmes);
 
 		// verificação
 		Assert.assertTrue(DataUtils.isMesmaData(aluguel.getDataLocacao(), new Date()));
@@ -71,21 +72,21 @@ public class LocacaoServiceTest {
 	public void testeLocacao_filmeSemEstoque() throws Exception {
 		// cenário
 		Usuario usuarioTeste = new Usuario("João");
-		Filme filmeAlugado = new Filme("Orgulho e Preconceito", 0, 10.25);
+		List<Filme> filmes = Arrays.asList(new Filme("Orgulho e Preconceito", 0, 10.25));
 
 		// ação
-		service.alugarFilme(usuarioTeste, filmeAlugado);
+		service.alugarFilme(usuarioTeste, filmes);
 	}
 	
 	@Test
 	public void testLocacao_usuarioVazio() throws FilmeSemEstoqueException {
 		
 		//cenário
-		Filme filme = new Filme("Filme 2", 1, 4.0);
+		List<Filme> filmes = Arrays.asList(new Filme("Orgulho e Preconceito", 5, 10.25));
 		
 		//ação
 		try {
-			service.alugarFilme(null, filme);	
+			service.alugarFilme(null, filmes);	
 			Assert.fail();
 		} catch (LocadoraException e) {
 			Assert.assertThat(e.getMessage(), is("Usuário vazio"));
