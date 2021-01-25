@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-	public void testeLocacao() throws Exception {
+	public void deveAlugarFilme() throws Exception {
 		// cenário
 		Usuario usuarioTeste = new Usuario("João");
 		List<Filme> filmes = Arrays.asList(new Filme("Orgulho e Preconceito", 5, 10.25));
@@ -69,7 +70,7 @@ public class LocacaoServiceTest {
 
 	//forma elegante
 	@Test(expected = FilmeSemEstoqueException.class)
-	public void testeLocacao_filmeSemEstoque() throws Exception {
+	public void deveLancarExcecaoAoAlugarFilmeSemEstoque() throws Exception {
 		// cenário
 		Usuario usuarioTeste = new Usuario("João");
 		List<Filme> filmes = Arrays.asList(new Filme("Orgulho e Preconceito", 0, 10.25));
@@ -79,7 +80,7 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-	public void testLocacao_usuarioVazio() throws FilmeSemEstoqueException {
+	public void deveLancarExcecaoAoAlugarFilmeSemUsuario() throws FilmeSemEstoqueException {
 		
 		//cenário
 		List<Filme> filmes = Arrays.asList(new Filme("Orgulho e Preconceito", 5, 10.25));
@@ -96,6 +97,76 @@ public class LocacaoServiceTest {
 		
 	}
 	
+	@Test
+	public void devePagar75PctNoFilme3() throws Exception {
+		//cenario
+		Usuario usuarioTeste = new Usuario("João");
+		List<Filme> filmes = Arrays.asList(
+				new Filme("Filme 1", 3, 4.00), new Filme("Filme 2", 3, 4.00), new Filme("Filme 3", 3, 4.00));
+		
+		//acao
+		Locacao resultado = service.alugarFilme(usuarioTeste, filmes);
+		
+		//verificacao
+		Assert.assertThat(resultado.getValor(), is(11.0));
+	}
+	
+	@Test
+	public void devePaga50PctNoFilme4() throws Exception {
+		//cenario
+		Usuario usuarioTeste = new Usuario("João");
+		List<Filme> filmes = Arrays.asList(
+				new Filme("Filme 1", 3, 4.00), new Filme("Filme 2", 3, 4.00), new Filme("Filme 3", 3, 4.00), new Filme("Filme 4", 3, 4.00));
+		
+		//acao
+		Locacao resultado = service.alugarFilme(usuarioTeste, filmes);
+		
+		//verificacao
+		Assert.assertThat(resultado.getValor(), is(13.0));
+	}
+	
+	@Test
+	public void devePaga25PctNoFilme5() throws Exception {
+		//cenario
+		Usuario usuarioTeste = new Usuario("João");
+		List<Filme> filmes = Arrays.asList(
+				new Filme("Filme 1", 3, 4.00), new Filme("Filme 2", 3, 4.00), new Filme("Filme 3", 3, 4.00), new Filme("Filme 4", 3, 4.00),  new Filme("Filme 5", 3, 4.00));
+		
+		//acao
+		Locacao resultado = service.alugarFilme(usuarioTeste, filmes);
+		
+		//verificacao
+		Assert.assertThat(resultado.getValor(), is(14.0));
+	}
+	
+	@Test
+	public void devePaga0PctNoFilme6() throws Exception {
+		//cenario
+		Usuario usuarioTeste = new Usuario("João");
+		List<Filme> filmes = Arrays.asList(
+				new Filme("Filme 1", 3, 4.00), new Filme("Filme 2", 3, 4.00), new Filme("Filme 3", 3, 4.00), new Filme("Filme 4", 3, 4.00),  new Filme("Filme 5", 3, 4.00), new Filme("Filme 6", 3, 4.00));
+		
+		//acao
+		Locacao resultado = service.alugarFilme(usuarioTeste, filmes);
+		
+		//verificacao
+		Assert.assertThat(resultado.getValor(), is(14.0));
+	}
+	
+	@Test
+	public void naoDeveDevolverFilmeAosDomingos() throws Exception {
+		//cenario
+		Usuario usuarioTeste = new Usuario("João");
+		List<Filme> filmes = Arrays.asList(
+				new Filme("Filme 1", 3, 4.00), new Filme("Filme 2", 3, 4.00), new Filme("Filme 3", 3, 4.00), new Filme("Filme 4", 3, 4.00),  new Filme("Filme 5", 3, 4.00), new Filme("Filme 6", 3, 4.00));
+		
+		//acao
+		Locacao retorno = service.alugarFilme(usuarioTeste, filmes);
+				
+		//verificacao
+		boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
+		Assert.assertTrue(ehSegunda);
+	}
 	
 	
 	//forma robusta
