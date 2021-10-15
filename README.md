@@ -3,4 +3,4 @@ Conjunto de atividades do curso Testes Unitários em Java - Domine JUnit, Mockit
 
 - Java 8
 - JUnit
-- Test Driven Development
+- Test Driven Development - TDD
